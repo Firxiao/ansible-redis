@@ -1,0 +1,12 @@
+---
+- name: config redis-sentinel.conf
+  template: src=redis-sentinel.conf.j2 dest=/etc/redis/redis-sentinel.conf owner="{{ redis_user }}"
+  tags: config
+  notify: restart redis-sentinel
+
+- name: create redis-sentinel init script
+  template: src=redis-sentinel.j2 dest=/etc/init.d/redis-sentinel mode=0755
+
+- name: set redis-sentinel running and onboot
+  service: name=redis-sentinel state=running enabled=yes
+

@@ -1,0 +1,19 @@
+--- 
+
+- name: preinstall | install dependces rpm
+  yum: name={{ item }} state=present
+  with_items:
+      - unzip
+      - gcc
+      - glibc 
+
+- name: preinstall | add redis user
+  user: name={{redis_user}} state=present createhome=no comment="redis user" system=yes shell=/sbin/nologin
+
+- name: preinstall | config limit
+  lineinfile: dest=/etc/security/limits.conf line="{{ redis_user }}    -       nproc           65535"
+
+- name: preinstall | unarchive 
+  unarchive: src={{ redis_tar_gz }} dest=/opt
+  when: redis_tar_gz 
+
